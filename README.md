@@ -1,7 +1,8 @@
 Instead of manually adjusting all of your settings in the game settings (taking away from our limited play time we have during open beta weekend), I have created this site that allows you to copy all of the settings you have from BF2042 to BF6.
 Simply go to https://noahlikes2code.github.io/Battlfield_Settings_Copier/ and follow the on-screen instructions.
 
-Notes - 
+Notes:
+
 -This was done in like 30 minutes.
 
 -You need to have at least opened BF6 to the main menu for the starter setting file to be created.
