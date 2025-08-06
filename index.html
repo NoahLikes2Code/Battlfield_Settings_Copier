@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Settings Synchronizer</title>
+    <title>Battlefield 2042 to Battlefield 6 Setting Sync</title>
     <style>
         * {
             margin: 0;
@@ -305,7 +305,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Game Settings Sync</h1>
+        <h1>Battlefield 2042 to Battlefield 6 Setting Sync</h1>
         <p class="subtitle">Easily copy settings between game configuration files</p>
 
         <div class="step">
@@ -314,6 +314,7 @@
                 Upload Source File
             </div>
             <p>Upload the file with settings you want to copy <strong>FROM</strong></p>
+            <p>(this is the BF2042 "PROFSAVE_profile" file)</p>
             <div class="file-upload-area" id="sourceUpload">
                 <div class="upload-icon">📄</div>
                 <div class="upload-text">Click here or drag & drop your source file</div>
@@ -332,6 +333,7 @@
                 Upload Target File
             </div>
             <p>Upload the file you want to copy settings <strong>TO</strong></p>
+            <p>(this is the original BF6 "PROFSAVE_profile" file)</p>
             <div class="file-upload-area" id="targetUpload">
                 <div class="upload-icon">📄</div>
                 <div class="upload-text">Click here or drag & drop your target file</div>
@@ -625,7 +627,7 @@
                 
                 html += `
                     <a href="${url}" download="${originalName}" class="download-button">
-                        💾 Download Updated File
+                        💾 Download Updated BF6 settings File
                     </a>
                 `;
             }
