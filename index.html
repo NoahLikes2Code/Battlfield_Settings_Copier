@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Settings Synchronizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .step {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .file-upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .file-upload-area:hover {
+            border-color: #764ba2;
+            background: #f0f4ff;
+        }
+
+        .file-upload-area.dragover {
+            border-color: #764ba2;
+            background: #e8f2ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f5e8;
+            border-radius: 10px;
+            border: 1px solid #4caf50;
+        }
+
+        .file-name {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .options {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .option {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .option input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .option label {
+            font-size: 1em;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .sync-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .sync-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .sync-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: #f0f4ff;
+        }
+
+        .download-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .download-button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid #ef5350;
+        }
+
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid #4caf50;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .step {
+                padding: 15px;
+            }
+            
+            .file-upload-area {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Game Settings Sync</h1>
+        <p class="subtitle">Easily copy settings between game configuration files</p>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Upload Source File
+            </div>
+            <p>Upload the file with settings you want to copy <strong>FROM</strong></p>
+            <div class="file-upload-area" id="sourceUpload">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Click here or drag & drop your source file</div>
+                <div class="upload-text" style="font-size: 0.9em; color: #999;">Supports files without extensions</div>
+            </div>
+            <div id="sourceFileInfo" class="file-info" style="display: none;">
+                <div class="file-name"></div>
+                <div class="file-size"></div>
+            </div>
+            <input type="file" id="sourceFileInput" style="display: none;">
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Upload Target File
+            </div>
+            <p>Upload the file you want to copy settings <strong>TO</strong></p>
+            <div class="file-upload-area" id="targetUpload">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Click here or drag & drop your target file</div>
+                <div class="upload-text" style="font-size: 0.9em; color: #999;">This file will be updated</div>
+            </div>
+            <div id="targetFileInfo" class="file-info" style="display: none;">
+                <div class="file-name"></div>
+                <div class="file-size"></div>
+            </div>
+            <input type="file" id="targetFileInput" style="display: none;">
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Choose Options
+            </div>
+            <div class="options">
+                <div class="option">
+                    <input type="checkbox" id="compareOnly">
+                    <label for="compareOnly">Compare only (don't make changes)</label>
+                </div>
+                <div class="option">
+                    <input type="checkbox" id="showDetails" checked>
+                    <label for="showDetails">Show detailed changes</label>
+                </div>
+            </div>
+        </div>
+
+        <button class="sync-button" id="syncButton" disabled>
+            🔄 Synchronize Settings
+        </button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing files...</p>
+        </div>
+
+        <div class="results" id="results">
+            <h3 id="resultsTitle">Results</h3>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let sourceFile = null;
+        let targetFile = null;
+
+        // File upload handlers
+        function setupFileUpload(uploadArea, fileInput, fileInfoDiv, callback) {
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0], fileInfoDiv, callback);
+                }
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFile(e.target.files[0], fileInfoDiv, callback);
+                }
+            });
+        }
+
+        function handleFile(file, fileInfoDiv, callback) {
+            const fileName = fileInfoDiv.querySelector('.file-name');
+            const fileSize = fileInfoDiv.querySelector('.file-size');
+            
+            fileName.textContent = `📁 ${file.name || 'Unnamed file'}`;
+            fileSize.textContent = `Size: ${formatFileSize(file.size)}`;
+            fileInfoDiv.style.display = 'block';
+            
+            callback(file);
+            updateSyncButton();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function updateSyncButton() {
+            const button = document.getElementById('syncButton');
+            button.disabled = !(sourceFile && targetFile);
+            
+            if (sourceFile && targetFile) {
+                button.textContent = '🔄 Synchronize Settings';
+            } else if (sourceFile) {
+                button.textContent = 'Please upload target file';
+            } else if (targetFile) {
+                button.textContent = 'Please upload source file';
+            } else {
+                button.textContent = 'Please upload both files';
+            }
+        }
+
+        // Setup file uploads
+        setupFileUpload(
+            document.getElementById('sourceUpload'),
+            document.getElementById('sourceFileInput'),
+            document.getElementById('sourceFileInfo'),
+            (file) => { sourceFile = file; }
+        );
+
+        setupFileUpload(
+            document.getElementById('targetUpload'),
+            document.getElementById('targetFileInput'),
+            document.getElementById('targetFileInfo'),
+            (file) => { targetFile = file; }
+        );
+
+        // Sync button handler
+        document.getElementById('syncButton').addEventListener('click', async () => {
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const compareOnly = document.getElementById('compareOnly').checked;
+            const showDetails = document.getElementById('showDetails').checked;
+
+            loading.classList.add('show');
+            results.classList.remove('show');
+
+            try {
+                const sourceText = await sourceFile.text();
+                const targetText = await targetFile.text();
+
+                const result = processFiles(sourceText, targetText, compareOnly, showDetails);
+                
+                setTimeout(() => {
+                    loading.classList.remove('show');
+                    showResults(result, compareOnly);
+                }, 1000);
+
+            } catch (error) {
+                loading.classList.remove('show');
+                showError('Error processing files: ' + error.message);
+            }
+        });
+
+        function processFiles(sourceText, targetText, compareOnly, showDetails) {
+            // Parse source settings
+            const sourceSettings = parseSettings(sourceText);
+            
+            // Parse target settings
+            const targetSettings = parseSettings(targetText);
+            
+            // Find differences
+            const changes = [];
+            const matchingFields = new Set();
+            
+            for (const [field, sourceValue] of Object.entries(sourceSettings)) {
+                if (targetSettings.hasOwnProperty(field)) {
+                    matchingFields.add(field);
+                    if (targetSettings[field] !== sourceValue) {
+                        changes.push({
+                            field: field,
+                            oldValue: targetSettings[field],
+                            newValue: sourceValue
+                        });
+                    }
+                }
+            }
+            
+            // Generate updated target text if not compare-only
+            let updatedTarget = targetText;
+            if (!compareOnly) {
+                updatedTarget = updateTargetText(targetText, sourceSettings);
+            }
+            
+            return {
+                changes: changes,
+                matchingFields: matchingFields.size,
+                totalSourceFields: Object.keys(sourceSettings).length,
+                totalTargetFields: Object.keys(targetSettings).length,
+                updatedTarget: updatedTarget,
+                compareOnly: compareOnly,
+                showDetails: showDetails
+            };
+        }
+
+        function parseSettings(text) {
+            const settings = {};
+            const lines = text.split('\n');
+            
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('//')) {
+                    const parts = trimmed.split(' ', 2);
+                    if (parts.length >= 1) {
+                        const field = parts[0];
+                        const value = parts.length > 1 ? parts[1] : '';
+                        settings[field] = value;
+                    }
+                }
+            }
+            
+            return settings;
+        }
+
+        function updateTargetText(targetText, sourceSettings) {
+            const lines = targetText.split('\n');
+            const updatedLines = [];
+            
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('//')) {
+                    const parts = trimmed.split(' ', 2);
+                    if (parts.length >= 1) {
+                        const field = parts[0];
+                        if (sourceSettings.hasOwnProperty(field)) {
+                            const newValue = sourceSettings[field];
+                            updatedLines.push(newValue ? `${field} ${newValue}` : field);
+                        } else {
+                            updatedLines.push(line.trimRight());
+                        }
+                    } else {
+                        updatedLines.push(line.trimRight());
+                    }
+                } else {
+                    updatedLines.push(line.trimRight());
+                }
+            }
+            
+            return updatedLines.join('\n');
+        }
+
+        function showResults(result, compareOnly) {
+            const results = document.getElementById('results');
+            const resultsTitle = document.getElementById('resultsTitle');
+            const resultsContent = document.getElementById('resultsContent');
+            
+            resultsTitle.textContent = compareOnly ? 'Comparison Results' : 'Sync Results';
+            
+            let html = `
+                <div class="success">
+                    <strong>✅ ${compareOnly ? 'Comparison' : 'Sync'} completed successfully!</strong><br>
+                    Found ${result.matchingFields} matching fields between files<br>
+                    ${result.changes.length} settings ${compareOnly ? 'would be' : 'were'} updated
+                </div>
+            `;
+            
+            if (result.changes.length > 0 && result.showDetails) {
+                html += `
+                    <h4 style="margin-top: 20px;">Changes ${compareOnly ? 'that would be made' : 'made'}:</h4>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Old Value</th>
+                                <th>New Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                for (const change of result.changes) {
+                    html += `
+                        <tr>
+                            <td><code>${change.field}</code></td>
+                            <td><code>${change.oldValue || '(empty)'}</code></td>
+                            <td><code>${change.newValue || '(empty)'}</code></td>
+                        </tr>
+                    `;
+                }
+                
+                html += `
+                        </tbody>
+                    </table>
+                `;
+            }
+            
+            if (!compareOnly && result.changes.length > 0) {
+                const blob = new Blob([result.updatedTarget], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const originalName = targetFile.name || 'updated_settings';
+                
+                html += `
+                    <a href="${url}" download="${originalName}" class="download-button">
+                        💾 Download Updated File
+                    </a>
+                `;
+            }
+            
+            resultsContent.innerHTML = html;
+            results.classList.add('show');
+        }
+
+        function showError(message) {
+            const results = document.getElementById('results');
+            const resultsTitle = document.getElementById('resultsTitle');
+            const resultsContent = document.getElementById('resultsContent');
+            
+            resultsTitle.textContent = 'Error';
+            resultsContent.innerHTML = `<div class="error">${message}</div>`;
+            results.classList.add('show');
+        }
+
+        // Initialize
+        updateSyncButton();
+    </script>
+</body>
+</html>
