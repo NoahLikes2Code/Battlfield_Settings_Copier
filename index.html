@@ -272,6 +272,25 @@
             box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4);
         }
 
+        .coffee-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #ff813f 0%, #ff6b35 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-left: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(255, 129, 63, 0.3);
+        }
+
+        .coffee-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 129, 63, 0.4);
+        }
+
         .loading {
             display: none;
             text-align: center;
@@ -667,9 +686,14 @@
                 const originalName = targetFile.name || 'updated_settings';
                 
                 html += `
-                    <a href="${url}" download="${originalName}" class="download-button">
-                        💾 Download Updated BF6 settings File
-                    </a>
+                    <div style="margin-top: 15px;">
+                        <a href="${url}" download="${originalName}" class="download-button">
+                            💾 Download Updated BF6 settings File
+                        </a>
+                        <a href="https://buymeacoffee.com/NoooUGH" target="_blank" class="coffee-button">
+                            ☕ Buy me a coffee
+                        </a>
+                    </div>
                 `;
             }
             
